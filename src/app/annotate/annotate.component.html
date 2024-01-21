@@ -9,11 +9,11 @@
 <app-camera *ngIf="cameraOn" (imageEvent)="getImage($event)" />
 
 <div class="anno-main" [ngClass]="cameraOn?'d-none':''">
-    <!-- <div class="canvas-container">
+    <div class="canvas-container">
         <canvas #annocanvas class="annocanvas"></canvas>
-    </div> -->
+    </div>
 
-    <div #p5Canvas class="canvas-container"></div>
+    <!-- <div #p5Canvas class="canvas-container"></div> -->
 
     <div class="button mb-2">
         <button type="button" class="btn me-2 btn-success">Polygon</button>
