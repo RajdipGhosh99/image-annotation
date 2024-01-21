@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { WebcamImage } from 'ngx-webcam';
 import { fabric } from 'fabric';
+import Konva from 'konva';
 
 
 @Component({
@@ -9,75 +10,75 @@ import { fabric } from 'fabric';
   styleUrls: ['./annotate.component.scss']
 })
 export class AnnotateComponent implements OnInit, AfterViewInit {
-  @ViewChild('annocanvas') canvasRef!: ElementRef
+  @ViewChild('konvaContainer', { static: true }) konvaContainer: ElementRef;
+
   public cameraOn: boolean = true
   private canvas: any
   private image!: WebcamImage
   selectedTool: string | undefined;
   isDrawing: boolean;
-  private currentLine: fabric.Line;
+
+  private stage: Konva.Stage;
+  private layer: Konva.Layer;
+  private polygon: Konva.Line;
 
   ngOnInit(): void {
-
+    this.initKonva();
   }
 
   ngAfterViewInit(): void {
-    this.canvas = new fabric.Canvas(this.canvasRef.nativeElement, { height: innerHeight - 200, width: innerWidth - 200 })
+    throw new Error('Method not implemented.');
+  }
 
-    this.canvas.on('mouse:down', this.handleMouseDown.bind(this));
-    this.canvas.on('mouse:move', this.handleMouseMove.bind(this));
-    this.canvas.on('mouse:up', this.handleMouseUp.bind(this));
+  private initKonva() {
+    this.stage = new Konva.Stage({
+      container: this.konvaContainer.nativeElement,
+      width: 800,
+      height: 600
+    });
+
+    this.layer = new Konva.Layer();
+    this.stage.add(this.layer);
+
+    // Add event listener for mouse click to draw a new vertex
+    this.stage.on('click', (e) => {
+      if (this.polygon) {
+        const pos = this.stage.getPointerPosition();
+        this.polygon.points([...this.polygon.points(), pos.x, pos.y]);
+        this.layer.draw();
+      }
+    });
+
+    // Add event listener for mouse drag to move the vertex
+    this.stage.on('dragmove', (e) => {
+      const target = e.target;
+      if (target instanceof Konva.Circle) {
+        const index = this.polygon.points().indexOf(target.x()) / 2;
+        const pos = this.stage.getPointerPosition();
+        this.polygon.points()[index * 2] = pos.x;
+        this.polygon.points()[index * 2 + 1] = pos.y;
+        this.layer.batchDraw();
+      }
+    });
+  }
+
+  startDrawingPolygon() {
+    this.layer.destroyChildren(); // Clear existing shapes
+
+    this.polygon = new Konva.Line({
+      points: [],
+      stroke: 'red',
+      strokeWidth: 2,
+      closed: true,
+      draggable: true
+    });
+
+    this.layer.add(this.polygon);
+    this.layer.draw();
   }
 
   getImage(image: WebcamImage) {
     this.image = image
     this.cameraOn = false
-    const imgElement = new Image();
-    imgElement.src = this.image?.imageAsDataUrl;
-    const fabricImage = new fabric.Image(imgElement, {
-      left: 0,
-      top: 0,
-      height: imgElement.height,
-      width: imgElement.width,
-      scaleX: this.canvas.width / imgElement.width,
-      scaleY: this.canvas.height / imgElement.height,
-      selectable: false
-    });
-
-    this.canvas.add(fabricImage);
-    this.canvas.renderAll();
   }
-
-  handleMouseDown(event: fabric.IEvent) {
-    if (!this.isDrawing) {
-      const pointer = this.canvas.getPointer(event.e);
-
-      // Create a new line
-      this.currentLine = new fabric.Line([pointer.x, pointer.y, pointer.x, pointer.y], {
-        stroke: 'black',
-        strokeWidth: 2,
-        originX: 'left',
-        originY: 'top',
-      });
-
-      this.canvas.add(this.currentLine);
-
-      this.isDrawing = true;
-    }
-  }
-
-  handleMouseMove(event: fabric.IEvent) {
-    if (this.isDrawing) {
-      const pointer = this.canvas.getPointer(event.e);
-
-      // Update the line coordinates
-      this.currentLine.set({ x2: pointer.x, y2: pointer.y });
-
-      this.canvas.renderAll();
-    }
-  }
-  handleMouseUp() {
-    this.isDrawing = false;
-  }
-
 }
