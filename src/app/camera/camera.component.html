@@ -1,0 +1,23 @@
+<div class="main">
+    <img *ngIf="showWebcam==1" (click)="showWebcam=2" matTooltip="Open Camera" class="cam-open"
+        src="https://w7.pngwing.com/pngs/889/287/png-transparent-camera-icon-camera-electronics-rectangle-square.png">
+
+    <div *ngIf="showWebcam==2">
+        <webcam class="image-obj" [trigger]="triggerObservable" (imageCapture)="handleImage($event)"
+            [allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable" [videoOptions]="videoOptions"
+            (cameraSwitched)="cameraWasSwitched($event)" (initError)="handleInitError($event)"></webcam>
+        <br />
+        <div>
+            <button class=" btn btn-primary me-2" (click)="triggerSnapshot();">Capture</button>
+            <button class="btn btn-secondary" (click)="showNextWebcam(true);">Switch Cam 🔄️</button>
+        </div>
+
+    </div>
+    <div *ngIf="showWebcam==3" class="view-image">
+        <img class="image-obj" [src]="image?.imageAsDataUrl" alt="img">
+        <div class="m-2 in">
+            <button class=" btn btn-primary me-2" (click)="confirm()">Confirm</button>
+            <button class="btn btn-danger" (click)="retake()">Retake</button>
+        </div>
+    </div>
+</div>

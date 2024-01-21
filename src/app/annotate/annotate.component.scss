@@ -1,0 +1,36 @@
+* {
+    box-sizing: border-box;
+}
+
+.anno-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column-reverse;
+    width: 100%;
+    height: calc(100% - 100px);
+
+    .canvas-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        margin: 5px;
+
+        canvas {
+            width: 100%;
+            border: 1px solid red;
+        }
+
+        /* Adjust height based on desired aspect ratio using media queries */
+        @media only screen and (max-width: 600px) {
+            canvas {
+                height: 400px;
+                /* Example for a 4:3 aspect ratio */
+            }
+        }
+
+    }
+
+
+}

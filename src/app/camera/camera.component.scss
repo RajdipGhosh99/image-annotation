@@ -1,0 +1,34 @@
+.main {
+    height: calc(100% - 100px);
+    width: 100vw;
+
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img.cam-open {
+        // margin: 0px;
+        height: 160px;
+        cursor: pointer !important;
+
+        :hover {
+            color: #bbbbbb;
+        }
+    }
+
+    .view-image {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+}
+
+.image-obj {
+    margin: 0;
+    padding: 0;
+    height: 65%;
+    width: 65%;
+}
