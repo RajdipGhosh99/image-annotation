@@ -9,15 +9,20 @@
 <app-camera *ngIf="cameraOn" (imageEvent)="getImage($event)" />
 
 <div class="anno-main" [ngClass]="cameraOn?'d-none':''">
+    <div class="mt-2">
+        <button type="button" class="btn me-2 btn-primary" (click)="exportAnnotatedImage('jpg')">Export</button>
+        <button type="button" class="btn me-2 btn-primary">JSON </button>
+    </div>
     <div class="canvas-container" #konvaContainer>
     </div>
 
     <!-- <div #p5Canvas class="canvas-container"></div> -->
 
     <div class="button mb-2">
-        <button type="button" class="btn me-2 btn-success">Polygon</button>
-        <button type="button" class="btn me-2 btn-warning">Rectengle</button>
-        <button type="button" class="btn me-2 btn-info">Polyline</button>
+        <button type="button" class="btn me-2 btn-success" (click)="startDrawingShape('polygon')">Polygon</button>
+        <button type="button" class="btn me-2 btn-warning" (click)="startDrawingShape('rect')">Rectengle</button>
+        <button type="button" class="btn me-2 btn-info" (click)="startDrawingShape('line')">Polyline</button>
+        <button type="button" class="btn me-2 btn-danger" (click)="clear()">Clear</button>
     </div>
 
 </div>
